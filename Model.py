@@ -380,5 +380,8 @@ final_upsample = UpSampling2D(size=(4,4), interpolation='bilinear')(final_conv)
 # Activation
 output = Activation("softmax")(final_upsample)
 
-#model
-model = Model(inputs = input, outputs = output)
+def CANet():
+    "This function returns the model architecture as an output"
+    model = Model(inputs = input, outputs = output)
+    
+    return model
