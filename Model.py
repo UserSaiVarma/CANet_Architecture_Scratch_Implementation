@@ -1,4 +1,6 @@
-#Importing Libraries
+###################################################################################################################
+#                                           Importing Libraries                                                   #
+###################################################################################################################
 import tensorflow as tf
 # tf.compat.v1.enable_eager_execution()
 from tensorflow import keras
@@ -18,6 +20,9 @@ from tensorflow.keras.initializers import glorot_uniform
 K.set_image_data_format('channels_last')
 K.set_learning_phase(1)
 
+###################################################################################################################
+#                                     Convolutional and Identity Block                                            #
+###################################################################################################################
 class convolutional_block(tf.keras.layers.Layer):
     "Building reusable convolutional block"
     def __init__(self, kernel=3, filters=[4,4,8], stride=1, name="conv_block"):
@@ -121,6 +126,9 @@ class identity_block(tf.keras.layers.Layer):
 
         return X
 
+###################################################################################################################
+#                                        Global and Context flow                                                  #
+###################################################################################################################
 class global_flow(tf.keras.layers.Layer):
     "Global Flow block"
     def __init__(self, width, height, channels, name="global_flow"):
@@ -215,6 +223,9 @@ class context_flow(tf.keras.layers.Layer):
 
         return upsample
 
+###################################################################################################################
+#                     Features Selection and Adapted Global Convolution Network Modules                           #
+###################################################################################################################
 class feature_selection_module(tf.keras.layers.Layer):  
     "Building Feature Selection Module"
     def __init__(self, name="feature_selection"):
@@ -285,7 +296,9 @@ class adapted_global_conv_layer(tf.keras.layers.Layer):
         
         return out
     
-#Building the CANet Network
+###################################################################################################################
+#                                        Building the CANet Network                                               #
+###################################################################################################################
 input = Input(shape=(128,128,3))
 
 # Stage 1(Convolutional block C0)
@@ -297,7 +310,6 @@ X = MaxPooling2D((2, 2), strides=(2, 2))(X)
 ###################################################################################################################
 #                             Convolutional & Identity block from 1 to 4 layers                                   #
 ###################################################################################################################
-
 # First Convolutional Block
 c1 = convolutional_block(kernel=3,  filters=[4,4,8], stride=2, name='conv_block_C1')(X)
 I11 = identity_block(kernel=3,  filters=[4,4,8], name='Identity_block_I11')(c1)
@@ -323,7 +335,6 @@ I44 = identity_block(kernel=3,  filters=[32,64,64], name='Identity_block_I44')(I
 ###################################################################################################################
 #                              Chained Context Aggregation Model (CAM)                                            #
 ###################################################################################################################
-
 # Global Flow
 width = I44.shape[1]
 height = I44.shape[2]
@@ -354,7 +365,6 @@ fsm_upsample = UpSampling2D(size=(2,2), interpolation='bilinear')(fsm)
 ###################################################################################################################
 #                                                     Decoder                                                     #
 ###################################################################################################################
-
 # Adaptive Gloabl Convolutional Layer
 agcn = adapted_global_conv_layer(name='Adaptive_Global_Conv_Layer')(c1)
 
