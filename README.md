@@ -20,7 +20,6 @@ You can use the "model.py" file to get the complete Architecture
     #check the summary for verification
     canet_model.summary()
 
-Feel free to cite this code if you are using it for custom tasks.
 #### Thank you
 
 
